@@ -1,0 +1,35 @@
+/*--------------------------------------------
+  ELEC 371 Fall 2018  Dr. N. Manjikian
+  Pseudocode for basic use of timer interrupts
+  --------------------------------------------*/
+
+
+main()::
+    Init()    /* subroutine to perform initialization */
+    loop
+        /* nothing */
+    end loop
+
+
+Init()::
+    turn off LEDs
+    clear extraneous pending timer interrupt
+    num_cycles = 25000000  /* with 50-MHz clock, this is 0.5 sec */
+    write upper/lower 16 bits of num_cycles value to timer start hi/lo registers
+    write 0x7 to timer control register to start timer in continuous mode with interrupts
+    set bit for timer interface in ienable register
+    set IE bit in Nios II status register to 1
+
+
+/* this is _NOT_ a normal subroutine, but
+   modified regs. must be saved/restored
+   (except special ones) */
+
+isr()::
+    perform processor-specific register update
+    read special register for pending interrupts
+    if (interrupt source is the timer) then
+        clear the timer interrupt
+	toggle LED bit 0 using XOR operation
+    end if
+    return from interrupt  /* distinct from normal subroutine */
